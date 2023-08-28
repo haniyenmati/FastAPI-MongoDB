@@ -1,32 +1,38 @@
-  version: '3'
+version: '3'
 
-  services:
+services:
 
-    db:
-      image: mongo:latest
-      container_name: fastmongo-db
-      ports:
-        - "27017:27017"
-      environment:
-        # TODO automatic without hardcode
-        MONGO_INITDB_DATABASE: temp_fastmongo_db 
-        MONGO_INITDB_ROOT_USERNAME: temp_fastmongo_user
-        MONGO_INITDB_ROOT_PASSWORD: temp_fastmongo_pass
-      command: mongod --bind_ip 127.0.0.1 
-      volumes:
-        - mongo-data:/data/db
+  db:
+    image: mongo:latest
+    container_name: fastmongo-db
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: temp_fastmongo_db 
+      MONGO_INITDB_ROOT_USERNAME: temp_fastmongo_user
+      MONGO_INITDB_ROOT_PASSWORD: temp_fastmongo_pass
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - fastmongo-network
 
-    web:
-      build: .
-      container_name: fastmongo-web
-      restart: always
-      volumes:
-        - ./src/:/app/src/
-      ports:
-        - "8000:8000"
-      depends_on:
-        - db
+  web:
+    build: .
+    container_name: fastmongo-web
+    restart: always
+    volumes:
+      - ./src/:/app/src/
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    networks:
+      - fastmongo-network
 
+volumes:
+  mongo-data:
 
-  volumes:
-    mongo-data:
+networks:
+  fastmongo-network:
+    driver: bridge

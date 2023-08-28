@@ -16,7 +16,9 @@ def create_app(debug: bool = False) -> FastAPI:
 
 
 def register_views(app: FastAPI):
-    pass
+    from routes.Auth import router as AuthRouter
+
+    app.include_router(AuthRouter)
 
 
 app = create_app()
@@ -30,14 +32,14 @@ async def create_db_client():
     db_connection = db.init()
     print("DB connected!")
 
+
 @app.on_event("shutdown")
 async def shutdown_db_client():
     print("DB is disconnecting ...")
     db.shutdown()
     print("DB disconnected!")
 
+
 @app.get('/')
 async def startup():
-    return {"status": "up"}
-
-
+    return {"status": "up", "db_status": str(db_connection.alive)}
