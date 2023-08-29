@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from controllers.Auth import register_user
+from controllers.Auth import register_controller, login_controller
 
 
 router = APIRouter(
@@ -12,5 +12,11 @@ router = APIRouter(
 # TODO better schema for req and res
 @router.post("/register")
 async def register(username: str, password: str):
-    res = await register_user(username, password)
+    res = await register_controller(username, password)
+    return {"data": res}
+
+
+@router.post("/login")
+async def login(username: str, password: str):
+    res = await login_controller(username, password)
     return {"data": res}
