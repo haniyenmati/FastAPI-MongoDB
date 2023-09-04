@@ -1,6 +1,6 @@
 import db
 from fastapi import FastAPI
-from utils import env
+from utils import env, exceptions
 from logging import Logger
 
 
@@ -16,13 +16,17 @@ def create_app(debug: bool = False) -> FastAPI:
 
 
 def register_views(app: FastAPI):
-    from routes.Auth import router as AuthRouter
+    from routes.auth import router as AuthRouter
 
     app.include_router(AuthRouter)
 
 
 app = create_app()
 db_connection = None
+
+
+app.add_exception_handler(exceptions.HTTPException,
+                          exceptions.http_exception_handler)
 
 
 @app.on_event("startup")
