@@ -23,7 +23,6 @@ router = APIRouter(
 )
 
 
-# TODO better schema for req and res
 @router.post("/register", response_model=UserCreationResponse, status_code=status.HTTP_201_CREATED)
 async def register(user: UserAuthRequest):
     res = await register_controller(username=user.username,
