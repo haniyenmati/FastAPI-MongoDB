@@ -3,7 +3,7 @@ from uuid import uuid4
 from datetime import datetime
 from models.files import Image
 from models.auth import User
-from utils.files import AllowedFileTypes, store_file, EXTENSIONS
+from utils.files import AllowedFileTypes, store_file, EXTENSIONS, zip_files
 from utils.shortcuts import get_object_or_none
 from utils import env
 
@@ -47,3 +47,12 @@ async def download_file_controller(file_uuid: str, owner: User):
 async def get_owner_files_controller(owner: User):
     images = Image.objects(owner=owner)
     return {"images": images}
+
+
+async def download_images_zip_controller(owner: User):
+    images = Image.objects(owner=owner)
+
+    path_list = [img.path for img in images]
+    zip_io = zip_files(path_list)
+
+    return zip_io.getvalue()

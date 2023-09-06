@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Depends, status, File, UploadFile
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, StreamingResponse
 from typing import Annotated
 from models.auth import User
 from controllers.files import (
     upload_file_controller,
     download_file_controller,
-    get_owner_files_controller
+    download_images_zip_controller
 )
 from controllers.auth import get_current_user
 from schemas.files import ImageUploadResponse, UserImagesResponse
@@ -30,7 +30,12 @@ async def download_file(user: Annotated[User, Depends(get_current_user)], file_u
     return FileResponse(path=res.get("path"), filename=res.get("filename"))
 
 
-@router.get("/images", response_model=UserImagesResponse)
-async def get_owner_files(user: Annotated[User, Depends(get_current_user)]):
-    res = await get_owner_files_controller(owner=user)
-    return res
+@router.get("/images")
+async def download_images_zip(user: Annotated[User, Depends(get_current_user)]):
+    zip_io = await download_images_zip_controller(owner=user)
+    return StreamingResponse(
+        iter([zip_io]),
+        media_type="application/x-zip-compressed",
+        headers={
+            "Content-Disposition": f"attachment; filename={user.username}_images.zip"}
+    )

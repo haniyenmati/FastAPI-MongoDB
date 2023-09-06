@@ -1,3 +1,6 @@
+import os
+import zipfile
+from io import BytesIO
 from enum import Enum
 
 
@@ -25,3 +28,15 @@ def store_file(base_dir: str, filename: str, content):
         f.write(content)
 
     return path
+
+
+def zip_files(path_list: list):
+    zip_io = BytesIO()
+
+    with zipfile.ZipFile(zip_io, mode='w', compression=zipfile.ZIP_DEFLATED) as temp_zip:
+        for path in path_list:
+            fdir, fname = os.path.split(path)
+            zip_path = os.path.join("archive", fname)
+            temp_zip.write(path, zip_path)
+
+    return zip_io
