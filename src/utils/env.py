@@ -19,3 +19,4 @@ class EnvFields(str, Enum):
     Web = 'WEB'
     DB = 'DB'
     Security = 'SEC'
+    File = 'FILE'

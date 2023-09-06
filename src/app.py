@@ -17,8 +17,10 @@ def create_app(debug: bool = False) -> FastAPI:
 
 def register_views(app: FastAPI):
     from routes.auth import router as AuthRouter
+    from routes.files import router as FilesRouter
 
     app.include_router(AuthRouter)
+    app.include_router(FilesRouter)
 
 
 app = create_app()
@@ -46,4 +48,4 @@ async def shutdown_db_client():
 
 @app.get('/')
 async def startup():
-    return {"status": "up", "db_status": str(db_connection.alive)}
+    return {"status": "alive"}
