@@ -1,6 +1,6 @@
 # FastAPI-MongoDB
 
-In order to run the project, you need to define a .env file in the src/ directory, including the keys below:
+## In order to run the project, you need to define a .env file in the src/ directory, including the keys below:
 
 ### web related variables
 
